@@ -1,0 +1,208 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 600px;
+  width: 600px;
+  overflow-y: overlay;
+}
+
+body::-webkit-scrollbar {
+  width: 3px;
+}
+body::-webkit-scrollbar-track {
+  background: #ffffff00;
+}
+body::-webkit-scrollbar-thumb {
+  background: #367cff;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 11pt;
+
+  background-color: rgba(255, 255, 255, 0.226);
+  background-color: #f0f8ff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.App {
+  margin: 0;
+  padding: 5px;
+  min-height: calc(100vh - 10px);
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+article {
+  margin-bottom: 5px;
+  border: 1px dotted #ddd;
+  padding: 5px;
+  overflow: hidden;
+  /*display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;*/
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: 525px auto;
+  grid-column-gap: 5px;
+  color: #555;
+  overflow-wrap: break-word;
+  background: white;
+}
+article:last-child {
+  margin-bottom: 0;
+}
+
+article * {
+  max-width: 100%;
+}
+
+article button.read {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f8ff;
+  border: none;
+  cursor: pointer;
+}
+
+article button.read:hover {
+  background-color: darkseagreen;
+}
+
+article header li {
+  color: #777;
+  font-size: .8em;
+  display: inline;
+}
+
+article header li button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+article header li button:focus {
+  outline: none;
+}
+
+article header li button:hover {
+  outline: none;
+  color: black;
+}
+
+article header li:last-child:after {
+  content: "";
+}
+
+article header li:after {
+  content: "•";
+  color: inherit;
+  margin: 5px;
+}
+
+article .content ul,
+article .content ol {
+  margin-left: 15px;
+}
+
+article .content pre {
+  padding: 5px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  overflow: auto;
+  overflow-wrap: initial;
+}
+
+article a {
+  color: #36c;
+  text-decoration: none;
+}
+
+article a:hover {
+  color: #333;
+}
+
+article .feed.icon {
+  margin-right: 5px;
+  top: 2px;
+  position: relative;
+}
+
+article .title {
+  font-weight: 600;
+}
+
+article h1 {
+  font-size: 16pt;
+}
+
+article p {
+  font-size: 11pt;
+}
+
+article .content {
+  margin-top: 10px;
+}
+
+article .content p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+article img {
+  max-width: 100%;
+}
+
+article blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 25px;
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #888;
+  line-height: 1.4em;
+}
+
+.alert {
+  padding: 8px 35px 8px 14px;
+  margin-bottom: 20px;
+  color: #c09853;
+  background-color: #fcf8e3;
+  border: 1px solid #fbeed5;
+  border-radius: 4px;
+  overflow: auto;
+}
+
+.drag {
+  -webkit-app-region: drag;
+}
