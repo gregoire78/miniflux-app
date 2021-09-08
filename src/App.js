@@ -1,7 +1,8 @@
 import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
-import useInterval from 'use-interval'
-import Article from './Article';
+import useInterval from 'use-interval';
+import useOnlineStatus from './hooks/useOnlineStatus';
+import Articles from './Articles';
 import './index.css';
 let Obj = new Image();
 Obj.src = "./assets/logo32.png";
@@ -12,6 +13,7 @@ function App() {
   const [entries, setEntries] = useState({});
   const [feeds, setFeedsState] = useState({});
   const [mouseFocus, setMouseFocus] = useState(false);
+  const onlineStatus = useOnlineStatus();
 
   function trayCanvas(data, color = "black") {
     let canvas = document.createElement('canvas');
@@ -72,9 +74,10 @@ function App() {
       const trayURL = trayCanvas(data.total)//canvas.toDataURL();
       const badgeURL = badgeCanvas(data.total)
       await window.api.ipcRenderer.send('update-badge', { trayURL, total: data.total, badgeURL });
-      if (data.total > total) {
-        await window.api.ipcRenderer.send('show-up');
-      }
+      /*if (data.total > total) {
+        //https://www.myinstants.com/instant/tuturu/?utm_source=copy&utm_medium=share
+        //await window.api.ipcRenderer.send('show-up');
+      }*/
       total = data.total;
       setEntries(data);
     }
@@ -84,7 +87,7 @@ function App() {
     let response = await fetch(`${process.env.MINIFLUX_URL}/v1/feeds`, {
       method: 'GET',
       headers: new Headers({
-        'Authorization': 'Basic ' + btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
+        'Authorization': 'Basic ' + window.btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
       })
     });
     let data = await response.json();
@@ -106,7 +109,7 @@ function App() {
     const feeds = await getFeeds();
 
     const feedresult = await Promise.all(feeds.map(async (feed) => {
-      if(feed.icon) {
+      if (feed.icon) {
         const y = await getIcon(feed.icon.feed_id);
         feed.icon = Object.assign(feed.icon, {
           data: y
@@ -118,10 +121,11 @@ function App() {
   }
 
   useEffect(() => {
-    setBadge(true);
-    setFeeds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (onlineStatus) {
+      setBadge(true);
+      setFeeds();
+    }
+  }, [onlineStatus])
 
   useEffect(() => {
     if (!mouseFocus) {
@@ -131,7 +135,7 @@ function App() {
     }
   }, [mouseFocus])
 
-  useInterval(setBadge, 10000)
+  useInterval(setBadge, onlineStatus ? 10000 : false)
 
   return (
     <div className="App"
@@ -141,7 +145,8 @@ function App() {
       onMouseLeave={() => {
         setMouseFocus(false);
       }}>
-      {entries.entries && <Article entries={entries} feeds={feeds} trayCanvas={trayCanvas} badgeCanvas={badgeCanvas} />}
+      {!onlineStatus && <div className="offline">Vous êtes hors ligne</div>}
+      {entries.entries && <Articles entries={entries} feeds={feeds} trayCanvas={trayCanvas} badgeCanvas={badgeCanvas} isOnline={onlineStatus} />}
     </div>
   );
 }

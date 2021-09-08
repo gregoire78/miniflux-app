@@ -206,3 +206,10 @@ article blockquote {
 .drag {
   -webkit-app-region: drag;
 }
+
+.offline {
+  background-color: orange;
+  z-index: 1;
+  padding: 5px;
+  text-align: center;
+}

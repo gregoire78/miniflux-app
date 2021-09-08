@@ -2,7 +2,8 @@ const path = require('path');
 
 module.exports =  {
   "packagerConfig": {
-    "icon": "src/assets/icons/icon.ico"
+    "icon": "src/assets/icons/icon.ico",
+    "executableName": "rss-app",
   },
   "makers": [
     {

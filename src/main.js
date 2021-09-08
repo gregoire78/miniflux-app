@@ -217,14 +217,14 @@ mb.on('ready', () => {
   })
 });
 
-mb.on('after-create-window', () => {
-  //mb.window.webContents.openDevTools({
-  //  mode: 'undocked'
-  //})
+/*mb.on('after-create-window', () => {
+  mb.window.webContents.openDevTools({
+    mode: 'undocked'
+  })
   //mb.window.webContents.on('devtools-opened', () => {
   //  setImmediate(function () {
   //    mb.window.focus()
   //  });
   //});
   //mb.window.setAlwaysOnTop(true)
-})
+})*/
