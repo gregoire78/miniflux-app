@@ -207,9 +207,20 @@ article blockquote {
   -webkit-app-region: drag;
 }
 
-.offline {
-  background-color: orange;
+.banner {
   z-index: 1;
   padding: 5px;
   text-align: center;
+}
+
+.offline {
+  background-color: orange;
+}
+
+.loading {
+  background-color: aqua;
+}
+
+.blue-1 {
+  background-color: #cee8ff;
 }

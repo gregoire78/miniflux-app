@@ -7,12 +7,11 @@ import './index.css';
 let Obj = new Image();
 Obj.src = "./assets/logo32.png";
 
-let total = 0;
-
 function App() {
-  const [entries, setEntries] = useState({});
-  const [feeds, setFeedsState] = useState({});
+  const [entries, setEntries] = useState();
+  const [feedsSate, setFeedsState] = useState({});
   const [mouseFocus, setMouseFocus] = useState(false);
+  const [loading, setLoading] = useState();
   const onlineStatus = useOnlineStatus();
 
   function trayCanvas(data, color = "black") {
@@ -61,12 +60,13 @@ function App() {
   }
 
   async function setBadge(load = false) {
+    setLoading(true)
     const isOpen = await window.api.isOpen()
     if (!isOpen || load) {
       const response = await fetch(`${process.env.MINIFLUX_URL}/v1/entries?status=unread&direction=desc&offset=0&limit=0`, {
         method: 'GET',
         headers: new Headers({
-          'Authorization': 'Basic ' + btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
+          'Authorization': 'Basic ' + window.btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
         })
       });
       const data = await response.json();
@@ -74,13 +74,9 @@ function App() {
       const trayURL = trayCanvas(data.total)//canvas.toDataURL();
       const badgeURL = badgeCanvas(data.total)
       await window.api.ipcRenderer.send('update-badge', { trayURL, total: data.total, badgeURL });
-      /*if (data.total > total) {
-        //https://www.myinstants.com/instant/tuturu/?utm_source=copy&utm_medium=share
-        //await window.api.ipcRenderer.send('show-up');
-      }*/
-      total = data.total;
-      setEntries(data);
+      setEntries(data.entries);
     }
+    setLoading(false)
   }
 
   async function getFeeds() {
@@ -98,7 +94,7 @@ function App() {
     const response = await fetch(`${process.env.MINIFLUX_URL}/v1/feeds/${id}/icon`, {
       method: 'GET',
       headers: new Headers({
-        'Authorization': 'Basic ' + btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
+        'Authorization': 'Basic ' + window.btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
       })
     });
     const data = await response.json();
@@ -106,9 +102,9 @@ function App() {
   }
 
   async function setFeeds() {
-    const feeds = await getFeeds();
+    const _feeds = await getFeeds();
 
-    const feedresult = await Promise.all(feeds.map(async (feed) => {
+    const feedresult = await Promise.all(_feeds.map(async (feed) => {
       if (feed.icon) {
         const y = await getIcon(feed.icon.feed_id);
         feed.icon = Object.assign(feed.icon, {
@@ -138,15 +134,16 @@ function App() {
   useInterval(setBadge, onlineStatus ? 10000 : false)
 
   return (
-    <div className="App"
+    <div className={["App", loading && "blue-1"].join(" ")}
       onMouseEnter={() => {
         setMouseFocus(true);
       }}
       onMouseLeave={() => {
         setMouseFocus(false);
       }}>
-      {!onlineStatus && <div className="offline">Vous êtes hors ligne</div>}
-      {entries.entries && <Articles entries={entries} feeds={feeds} trayCanvas={trayCanvas} badgeCanvas={badgeCanvas} isOnline={onlineStatus} />}
+      {!onlineStatus && <div className="banner offline">Vous êtes hors ligne</div>}
+      {(loading && !entries) && <div className="banner loading">Loading</div>}
+      {entries && <Articles entries={entries} feeds={feedsSate} trayCanvas={trayCanvas} badgeCanvas={badgeCanvas} isOnline={onlineStatus} />}
     </div>
   );
 }

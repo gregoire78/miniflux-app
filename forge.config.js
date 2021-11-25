@@ -51,7 +51,8 @@ module.exports =  {
           ]
         },
         "port": 3005,
-        "loggerPort": 9001
+        "loggerPort": 9001,
+        "devContentSecurityPolicy": "default-src 'self' 'unsafe-eval' 'unsafe-inline' data: http://localhost:3000 https://rss.joncour.tech https://fonts.gstatic.com; media-src * data: blob: 'unsafe-inline'; img-src * data: blob: 'unsafe-inline';",
       }
     ]
   ]

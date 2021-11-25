@@ -6,8 +6,8 @@ Obj.src = "./assets/logo32.png";
 
 function Articles(props) {
 
-    const [entries, setEntries] = useState([])
-    const [feeds, setFeeds] = useState([])
+    const [entries, setEntries] = useState(props.entries)
+    const [feeds, setFeeds] = useState(props.feeds)
 
     async function setBadge(data) {
         const trayURL = props.trayCanvas(data);
@@ -16,9 +16,9 @@ function Articles(props) {
     }
 
     useEffect(() => {
-        setEntries(props.entries.entries)
+        setEntries(props.entries)
         setFeeds(props.feeds)
-    }, [props.entries.entries, props.feeds])
+    }, [props.entries, props.feeds])
 
     return (
         <>
