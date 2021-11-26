@@ -40,7 +40,6 @@ module.exports = {
             }, ],
         }),
         new EnvironmentPlugin({
-        NODE_ENV: 'production',
             ...require('dotenv').config().parsed
         }),
     ],

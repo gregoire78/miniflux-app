@@ -9,7 +9,7 @@ Obj.src = "./assets/logo32.png";
 
 function App() {
   const [entries, setEntries] = useState();
-  const [feedsSate, setFeedsState] = useState({});
+  const [feedsSate, setFeedsState] = useState();
   const [mouseFocus, setMouseFocus] = useState(false);
   const [loading, setLoading] = useState();
   const onlineStatus = useOnlineStatus();
@@ -134,7 +134,7 @@ function App() {
   useInterval(setBadge, onlineStatus ? 10000 : false)
 
   return (
-    <div className={["App", loading && "blue-1"].join(" ")}
+    <div className={["App", loading && "loading"].join(" ")}
       onMouseEnter={() => {
         setMouseFocus(true);
       }}
@@ -143,7 +143,14 @@ function App() {
       }}>
       {!onlineStatus && <div className="banner offline">Vous êtes hors ligne</div>}
       {(loading && !entries) && <div className="banner loading">Loading</div>}
-      {entries && <Articles entries={entries} feeds={feedsSate} trayCanvas={trayCanvas} badgeCanvas={badgeCanvas} isOnline={onlineStatus} />}
+      {entries && <Articles 
+        entries={entries} 
+        setEntries={setEntries}
+        feeds={feedsSate} 
+        trayCanvas={trayCanvas} 
+        badgeCanvas={badgeCanvas}
+        isOnline={onlineStatus}
+      />}
     </div>
   );
 }
