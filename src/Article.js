@@ -10,12 +10,10 @@ moment.extend(localizedFormat)
 let Obj = new Image();
 Obj.src = "./assets/logo32.png";
 
-function Article({ entrie, feed, isOnline, onRead, isFirst }) {
+function Article({ entrie, feed, isOnline, onRead, isFirst = false }) {
 
-    const [display, setDisplay] = useState(isFirst)
+    const [display, setDisplay] = useState(null)
     const [bookmark, setBookmark] = useState(entrie.starred)
-
-    useEffect(() => setDisplay(isFirst), [isFirst])
 
     async function updateEntrie(id) {
         await fetch(`${process.env.MINIFLUX_URL}/v1/entries`, {
@@ -41,7 +39,7 @@ function Article({ entrie, feed, isOnline, onRead, isFirst }) {
     }
 
     return (
-        <article key={entrie.id}>
+        <article>
             <div>
                 <header>
                     <p>
@@ -55,8 +53,10 @@ function Article({ entrie, feed, isOnline, onRead, isFirst }) {
                             <time dateTime={entrie.published_at}>{moment(entrie.published_at).fromNow()}</time>
                         </li>
                         <li>
-                            <button onClick={() => setDisplay(d => !d)}>
-                                {!display? 'voir' : 'cacher'} le contenu
+                            <button onClick={() => {
+                                setDisplay(d => d === null ? !isFirst : !d)
+                            }}>
+                                {display || (isFirst && display == null) ? 'cacher' : 'voir'} le contenu
                             </button>
                         </li>
                         <li>{entrie.feed.category.title}</li>
@@ -65,12 +65,12 @@ function Article({ entrie, feed, isOnline, onRead, isFirst }) {
                         </li>
                     </ul>
                 </header>
-                <p className="content" style={{ display: display ? 'block' : 'none' }} dangerouslySetInnerHTML={{ __html: entrie.content }}></p>
+                <p className="content" style={{ display: display || (isFirst && display == null) ? 'block' : 'none' }} dangerouslySetInnerHTML={{ __html: entrie.content }}></p>
             </div>
             <div>
-                <button className="read" disabled={!isOnline} onClick={() => {
-                    updateEntrie(entrie.id)
-                    onRead()
+                <button className="read" disabled={!isOnline} onClick={async () => {
+                    onRead(entrie)
+                    await updateEntrie(entrie.id)
                 }}>✔︎ Lu</button>
             </div>
         </article>

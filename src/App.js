@@ -2,7 +2,7 @@ import { hot } from 'react-hot-loader';
 import React, { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
 import useOnlineStatus from './hooks/useOnlineStatus';
-import Articles from './Articles';
+import Article from './Article';
 import './index.css';
 let Obj = new Image();
 Obj.src = "./assets/logo32.png";
@@ -59,7 +59,7 @@ function App() {
     return dataURL;
   }
 
-  async function setBadge(load = false) {
+  async function getEntries(load = false) {
     setLoading(true)
     const isOpen = await window.api.isOpen()
     if (!isOpen || load) {
@@ -70,13 +70,9 @@ function App() {
         })
       });
       const data = await response.json();
-
-      const trayURL = trayCanvas(data.total)//canvas.toDataURL();
-      const badgeURL = badgeCanvas(data.total)
-      await window.api.ipcRenderer.send('update-badge', { trayURL, total: data.total, badgeURL });
       setEntries(data.entries);
     }
-    setLoading(false)
+    setTimeout(() => setLoading(false), 500)
   }
 
   async function getFeeds() {
@@ -118,7 +114,7 @@ function App() {
 
   useEffect(() => {
     if (onlineStatus) {
-      setBadge(true);
+      getEntries(true);
       setFeeds();
     }
   }, [onlineStatus])
@@ -131,10 +127,23 @@ function App() {
     }
   }, [mouseFocus])
 
-  useInterval(setBadge, onlineStatus ? 10000 : false)
+  useEffect(() => {
+    if(entries) {
+      if (entries?.length === 0) {
+        window.api.ipcRenderer.send('hide-down');
+      }
+      const trayURL = trayCanvas(entries.length + '');
+      const badgeURL = badgeCanvas(entries.length + '');
+      (async () => {
+        await window.api.ipcRenderer.send('update-badge', { badgeURL, total: entries.length, trayURL });
+      })()
+    }
+  }, [entries])
+
+  useInterval(getEntries, onlineStatus ? 10000 : false)
 
   return (
-    <div className={["App", loading && "loading"].join(" ")}
+    <div className={"App"}
       onMouseEnter={() => {
         setMouseFocus(true);
       }}
@@ -143,14 +152,19 @@ function App() {
       }}>
       {!onlineStatus && <div className="banner offline">Vous êtes hors ligne</div>}
       {(loading && !entries) && <div className="banner loading">Loading</div>}
-      {entries && <Articles 
-        entries={entries} 
-        setEntries={setEntries}
-        feeds={feedsSate} 
-        trayCanvas={trayCanvas} 
-        badgeCanvas={badgeCanvas}
-        isOnline={onlineStatus}
-      />}
+      {entries?.length === 0 && <p className="alert">Il n'y a rien de nouveau à lire.</p>}
+      {entries?.map((entrie, k) =>  (
+        <Article
+          key={entrie.id}
+          entrie={entrie}
+          feed={feedsSate?.find((feed) => feed.id === entrie.feed.id)}
+          isOnline={onlineStatus}
+          isFirst={k === 0}
+          onRead={(entrie_update) => {
+              setEntries(e => e.filter(h => h.id !== entrie_update.id))
+          }}
+        />
+      ))}
     </div>
   );
 }
