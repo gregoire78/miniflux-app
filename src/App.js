@@ -113,9 +113,14 @@ function App() {
   }
 
   useEffect(() => {
+    setFeeds();
     if (onlineStatus) {
       getEntries(true);
-      setFeeds();
+    }
+    return () => {
+      setFeedsState()
+      setEntries()
+      setLoading()
     }
   }, [onlineStatus])
 
