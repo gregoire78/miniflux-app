@@ -4,6 +4,7 @@ import useInterval from 'use-interval';
 import useOnlineStatus from './hooks/useOnlineStatus';
 import Article from './Article';
 import './index.css';
+
 let Obj = new Image();
 Obj.src = "./assets/logo32.png";
 
@@ -35,8 +36,7 @@ function App() {
     ctx.textBaseline = "middle";
     ctx.fillText(data + "", 16, 23, 32);
 
-    const dataURL = canvas.toDataURL();
-    return dataURL;
+    return canvas.toDataURL();
   }
 
   function badgeCanvas(data) {
@@ -55,8 +55,7 @@ function App() {
     ctx.textBaseline = "middle";
     ctx.fillText(data + "", 16, 19, 32);
 
-    const dataURL = canvas.toDataURL();
-    return dataURL;
+    return canvas.toDataURL();
   }
 
   async function getEntries(load = false) {
@@ -82,8 +81,7 @@ function App() {
         'Authorization': 'Basic ' + window.btoa(`${process.env.MINIFLUX_LOGIN}:${process.env.MINIFLUX_PASSWORD}`)
       })
     });
-    let data = await response.json();
-    return data;
+    return await response.json();
   }
 
   async function getIcon(id) {
