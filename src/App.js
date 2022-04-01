@@ -111,8 +111,8 @@ function App() {
   }
 
   useEffect(() => {
-    setFeeds();
     if (onlineStatus) {
+      setFeeds();
       getEntries(true);
     }
     return () => {
@@ -144,6 +144,7 @@ function App() {
   }, [entries])
 
   useInterval(getEntries, onlineStatus ? 10000 : false)
+  useInterval(setFeeds, onlineStatus ? 30000 : false)
 
   return (
     <div className={"App"}
@@ -156,7 +157,7 @@ function App() {
       {!onlineStatus && <div className="banner offline">Vous êtes hors ligne</div>}
       {(loading && !entries) && <div className="banner loading">Loading</div>}
       {entries?.length === 0 && <p className="alert">Il n'y a rien de nouveau à lire.</p>}
-      {entries?.map((entrie, k) =>  (
+      {entries?.map((entrie, k) => (
         <Article
           key={entrie.id}
           entrie={entrie}
