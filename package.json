@@ -62,7 +62,7 @@
     "electron-context-menu": "^2.4.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^7.0.2",
-    "menubar": "^9.1.0",
+    "menubar": "^9.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hot-loader": "^4.13.0",
