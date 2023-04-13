@@ -20,11 +20,13 @@ bin is located in `dist`
 
 #### build with docker on linux
 
-`sudo docker run -it --rm -v $PWD/rss:/usr/src/app -w /usr/src/app node:16 bash`
+`docker run -it --rm -v $PWD:/usr/src/app -w /usr/src/app node:16 bash`
 
 ```bash
+apt update
+apt install dpkg fakeroot
+su node
 npm ci
 npm run make:linux
 npm run package:linux
-apt install dpkg fakeroot
 ```
